@@ -1,0 +1,106 @@
+# Name must match the class name in __init__.py
+tool: XilinxImplementTool
+namespace: implement 
+
+# Dictionary containing all properties/attributes required by the tool
+properties:
+  verilog_version:
+    description: "Determines whether or not vivado is actually run (otherwise template rendered and that's it)"
+    default: "sv"
+    schema: "enum('default', 'sv')"
+  execute:
+    description: "Determines whether or not vivado is actually run (otherwise template rendered and that's it)"
+    default: true
+    schema: "bool()"
+  part:
+    description: "The FPGA part number that the software should target"
+    default: null 
+    schema: "str()"
+  verilog:
+    description: "List of verilog files to be included (read in the order given)"
+    default: [] 
+    schema: "list(file())"
+  vhdl:
+    description: "List of vhdl files to be included (read in the order given)"
+    default: [] 
+    schema: "list(file())"
+  xdc:
+    description: "List of xdc files to be included (read in the order given)"
+    default: [] 
+    schema: "list(file())"
+  ports:
+    description: "List of port objects"
+    default: [] 
+    schema: "list(include('port'))"
+  primary_clocks:
+    description: "List of clocks for generating clock timing constraints"
+    default: [] 
+    schema: "list(include('primary_clock'))"
+  generated_clocks:
+    description: "List of clocks for generating clock timing constraints"
+    default: [] 
+    schema: "list(include('generated_clock'))"
+  input_delay_constraints:
+    description: "List of input delay constraints"
+    default: [] 
+    schema: "list(include('input_delay_constraint'))"
+  output_delay_constraints:
+    description: "List of output delay constraints"
+    default: [] 
+    schema: "list(include('output_delay_constraint'))"
+  config:
+    description: "Configuration settings for FPGA"
+    default: {mode: "B_SCAN", bank_voltage_select: "GND", voltage: 1.8}
+    schema: "include('cfg')"
+  units:
+    description: "Define units for all variables"
+    default: {time: "ns", capacitance: "pF", current: "mA", voltage: "V", power: "mW", resistance: "ohm", altitude: "meters"}
+    schema: "include('units')"
+schema_includes:
+  input_delay_constraint:
+    clock: "str()"
+    clock_edge: "enum('rise', 'fall')"
+    port: "str()"
+    min_delay: "num(min= 0.0)"
+    max_delay: "num(min= 0.0)"
+  output_delay_constraint:
+    clock: "str()"
+    clock_edge: "enum('rise', 'fall')"
+    port: "str()"
+    min_delay: "num(min= 0.0)"
+    max_delay: "num(min= 0.0)"
+  port:
+    name: "str()"
+    iostandard: "enum('LVCMOS18', 'LVDS')"
+    package_pin: "str()"
+    clock: "bool(required=False)"
+    buffer_type: "str(required=False)"
+    #drive: "str()"
+    #slew: "str()"
+  cfg:
+    mode: "str()"
+    bank_voltage_select: "enum('VCCO', 'GND')"
+    voltage: "num(min=0.0)"
+  primary_clock:
+    name: "str()"
+    object: "str()"
+    period: "num(min=0.0)"
+    waveform: "list(num(min=0.0), required=False)"
+  generated_clock:
+    name: "str()"
+    object: "str()"
+    type: "enum('port', 'pin', 'net', 'none')"
+    source: "str()"
+    source_type: "enum('port', 'pin', 'net', 'none')"
+    edges: "list(int(min=1), required=False)"
+    edge_shift: "list(num(min=0.0), required=False)"
+    multiplier: "int(min=1, required=False)"
+    divisor: "int(min=1, required=False)"
+  units:
+    time: "enum('us', 'ns', 'ps')"
+    capacitance: "str()"
+    current: "str()"
+    voltage: "str()"
+    power: "str()"
+    resistance: "str()"
+    altitude: "str()"
